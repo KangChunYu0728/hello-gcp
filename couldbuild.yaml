@@ -1,0 +1,15 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/hello-repo/hello-app:latest', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/hello-repo/hello-app:latest']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+    ['run', 'deploy', 'hello-app',
+     '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/hello-repo/hello-app:latest',
+     '--platform', 'managed',
+     '--region', 'us-central1',
+     '--allow-unauthenticated']
